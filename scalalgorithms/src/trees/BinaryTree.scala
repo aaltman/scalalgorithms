@@ -1,6 +1,7 @@
 package trees
+import scala.collection
 
-class BinaryTree[T: Comparable] {
+class BinaryTree[T] {
   protected var contents: T = _
   protected var l: BinaryTree[T] = _
   protected var r: BinaryTree[T] = _
@@ -57,4 +58,17 @@ class BinaryTree[T: Comparable] {
       (l.postorderTraversalAsArray ++ r.postorderTraversalAsArray) :+ contents 
     }
   }
+  
+  def breadthFirstTraversalAsArray(implicit m: ClassManifest[T]): Array[T] = {
+    var returned = Array[T]()
+    var visitQueue = new scala.collection.mutable.Queue[BinaryTree[T]]
+    visitQueue.enqueue(this)
+    while (!visitQueue.isEmpty) {
+      returned :+ visitQueue.dequeue()
+      if (l != null) visitQueue.enqueue(l)
+      if (r != null) visitQueue.enqueue(r)
+    }
+    returned
+  }
 }
+
