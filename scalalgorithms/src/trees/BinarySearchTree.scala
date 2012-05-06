@@ -1,21 +1,24 @@
 package trees
+import scala.NotDefinedError
+import scala.reflect._
 
-class BinarySearchTree[T: Ordered] extends BinaryTree[T] {
-  // FIXME is there a more elegant way to do this?
-  var l: BinarySearchTree[T] = _
-  var r: BinarySearchTree[T] = _
+class BinarySearchTree[T <: Ordered[T]](stored_value: T, val TFac: () => T) extends BinaryTree(stored_value) {  
+  def insert(newval: T) {
+	if (newval <= contents) {
+	  if (l == null) {
+	  	throw new NotDefinedError("Still trying to work around type erasure.")
+	  } else {
+	  	l.insert(newval)
+	  }
+	} else {
+	  if (r == null) {
+	    throw new NotDefinedError("Still trying to work around type erasure.")
+	  }
+	  r.insert(newval)
+	}
+  }
   
-  def insert(root: BinarySearchTree[T], newval: T) {
-    if (root == null) {
-      var newnode = new BinarySearchTree[T]
-      newnode.set(newval)
-      newnode
-    } else {
-      if (newval <= root.data) {
-        l = insert(root.l, newval)
-      } else {
-        r = insert(root.r, newval)
-      }
-    }
+  def delete(newval: T) {
+    throw new NotDefinedError("Haven't yet defined binary search tree delete method.")
   }
 } 

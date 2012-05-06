@@ -13,8 +13,8 @@ class Queue[T] {
     if (length == 0) {
       throw new java.util.NoSuchElementException
     } 
-    var oldval = elementList.gethead.data
-    elementList.removeNode(elementList.gethead)
+    var oldval = elementList.head.contents
+    elementList.removeNode(elementList.head)
     oldval
   }
 }

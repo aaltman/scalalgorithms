@@ -1,15 +1,10 @@
 package trees
 import scala.collection
 
-class BinaryTree[T] {
-  protected var contents: T = _
-  protected var l: BinaryTree[T] = _
-  protected var r: BinaryTree[T] = _
-  
-  def set(newval: T) = { contents = newval }
-  def data = contents
-  def leftChild = l
-  def rightChild = r
+abstract class BinaryTree[T](stored_value: T) { 
+  var contents = stored_value
+  var l: this.type = _
+  var r: this.type = _
   
   def weight: Int = {
     if (l == null && r == null) {

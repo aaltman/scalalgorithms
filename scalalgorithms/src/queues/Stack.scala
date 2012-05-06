@@ -11,7 +11,7 @@ class Stack[T] extends DoublyLinkedList[T] {
   }
   
   def pop = {
-    val returned = head.data
+    val returned = head.contents
     removeNode(head)
     returned
   }

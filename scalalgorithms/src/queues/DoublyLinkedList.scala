@@ -7,32 +7,25 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 class DoublyLinkedNode[T](newval: T) extends visualization.Visualizable {
-  protected var contents: T = newval
-  protected var n: DoublyLinkedNode[T] = _
-  protected var p: DoublyLinkedNode[T] = _
-  
-  def set(newval: T) = { contents = newval }
-  def data = contents
-  def next = n 
-  def prev = p
-  def setnext(newnext: DoublyLinkedNode[T]) = { n = newnext }
-  def setprev(newprev: DoublyLinkedNode[T]) = { p = newprev }
-  
+  var contents: T = newval
+  var n: DoublyLinkedNode[T] = _
+  var p: DoublyLinkedNode[T] = _
+
   def snip() {
     if (n == null) {
       if (p == null) {
         null
       } else {
-        p.setnext(null)
+        p.n = null
         p
       }
     } else {
       if (p == null) {
-        n.setprev(null)
+        n.p = null
         n
       } else {
-        p.setnext(n)
-        n.setprev(p)
+        p.n = n
+        n.p = p
         p
       }
     }
@@ -40,39 +33,36 @@ class DoublyLinkedNode[T](newval: T) extends visualization.Visualizable {
 }
 
 class DoublyLinkedList[T] extends visualization.Visualizable {
-  protected var head: DoublyLinkedNode[T] = _
-  protected var tail: DoublyLinkedNode[T] = _
-  
-  def gethead = head
-  def gettail = tail
+  var head: DoublyLinkedNode[T] = _
+  var tail: DoublyLinkedNode[T] = _
   
   def insertAtHead(newval: T) {
     var newnode = new DoublyLinkedNode[T](newval)
-    newnode.setnext(head)  
+    newnode.n = head
     if (head == null) {
       head = newnode
       tail = newnode
     } else {
-      head.setprev(newnode)
+      head.p = newnode
       head = newnode
     }
   }
   
   def insertAtTail(newval: T) {
 	var newnode = new DoublyLinkedNode[T](newval)
-    newnode.setprev(tail)
+    newnode.p = tail
     if (tail == null) {
       head = newnode
       tail = newnode
     } else {
-      tail.setnext(newnode)
+      tail.n = newnode
       tail = newnode
     }
   }
   
   def removeNode(oldnode: DoublyLinkedNode[T]) {
-    if (head == oldnode) head = oldnode.next
-    if (tail == oldnode) tail = oldnode.prev
+    if (head == oldnode) head = oldnode.n
+    if (tail == oldnode) tail = oldnode.p
     oldnode.snip()
   }
   
@@ -80,8 +70,8 @@ class DoublyLinkedList[T] extends visualization.Visualizable {
     var returned = Array[T]()
     var thisnode = head
     while (thisnode != null) {
-      returned :+= thisnode.data
-      thisnode = thisnode.next
+      returned :+= thisnode.contents
+      thisnode = thisnode.n
     }
     returned
   }
@@ -94,15 +84,15 @@ class DLLTest extends FlatSpec with ShouldMatchers {
   
   "A doubly linked node" should "store a value of type string." in {
     val newnode = new DoublyLinkedNode(teststring)
-    newnode.data should equal (teststring)
+    newnode.contents should equal (teststring)
   }
   
   "A doubly linked list" should "store a node with a value of type string." in {
     val newlist = new DoublyLinkedList[String]
     newlist.insertAtHead(teststring)
-    newlist.gethead.data should equal (teststring)
-    newlist.gettail.data should equal (teststring)
-    newlist.gethead should equal (newlist.gettail)
+    newlist.head.contents should equal (teststring)
+    newlist.tail.contents should equal (teststring)
+    newlist.head should equal (newlist.tail)
   }
   
   "A doubly linked list" should "preserve the order when inserting at the tail." in {
@@ -137,9 +127,9 @@ class DLLTest extends FlatSpec with ShouldMatchers {
       newlist.insertAtTail(newval)
     }
     
-    newlist.removeNode(newlist.gethead)
-    newlist.removeNode(newlist.gettail)
-    newlist.removeNode(newlist.gethead.next)
+    newlist.removeNode(newlist.head)
+    newlist.removeNode(newlist.tail)
+    newlist.removeNode(newlist.head.n)
     
     val cmp = Array(2,4)
     val newarray = newlist.toArray
@@ -154,15 +144,15 @@ class DLLTest extends FlatSpec with ShouldMatchers {
     val newlist = new DoublyLinkedList[Int]
     
     newlist.insertAtHead(1)
-    newlist.gethead should equal (newlist.gettail)
-    newlist.removeNode(newlist.gethead)
-    newlist.gethead should equal (null)
-    newlist.gettail should equal (null)
+    newlist.head should equal (newlist.tail)
+    newlist.removeNode(newlist.head)
+    newlist.head should equal (null)
+    newlist.tail should equal (null)
     
     newlist.insertAtTail(1)
-    newlist.gethead should equal (newlist.gettail)
-    newlist.removeNode(newlist.gettail)
-    newlist.gethead should equal (null)
-    newlist.gettail should equal (null)
+    newlist.head should equal (newlist.tail)
+    newlist.removeNode(newlist.tail)
+    newlist.head should equal (null)
+    newlist.tail should equal (null)
   }
 }
